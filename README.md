@@ -8,15 +8,15 @@ Les données utilisées sont celles d'une station de ski.
 
 ### 1) Créer les tables et leurs contraintes
 
-==> tables.sql
+[tables.sql](https://github.com/hugochauvet/Projet_BDD_stationski/blob/main/tables.sql)
 
 ### 2) Alimenter les tables
 
-==> alimentation.sql
+[alimentation.sql](https://github.com/hugochauvet/Projet_BDD_stationski/blob/main/alimentation.sql)
 
 ### 3) Réaliser les requêtes
 
-==> requetes.sql
+[requetes.sql](https://github.com/hugochauvet/Projet_BDD_stationski/blob/main/requetes.sql)
 
 1) Quel est le dernier forfait valide correspondant à un identifiant de carte donné (exemple : carte n°1) ?
 2) Quels sont les noms des remontées de type ‘télésiège’ ?
@@ -35,7 +35,7 @@ Les données utilisées sont celles d'une station de ski.
 
 ### 4) Créer des triggers et les tester
 
-==> triggers.sql
+[triggers.sql](https://github.com/hugochauvet/Projet_BDD_stationski/blob/main/triggers.sql)
 
 1) Une carte ne peut pas être associée à deux forfaits qui ont une période de validité commune.
 2) Une carte ne peut pas être associée à un nouveau forfait si l’ancien n’est pas encore utilisé (date debut IS NULL)
