@@ -2,7 +2,7 @@
 
 Les données utilisées sont celles d'une station de ski.
 
-![Modèle logique des données](MLD.jpg)
+![Modèle logique des données](MLD.png)
 
 ## Objectifs
 
