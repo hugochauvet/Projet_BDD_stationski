@@ -97,5 +97,3 @@ select extract (MONTH from date_debut) as mois, extract (YEAR from date_debut) a
 from type_forfait natural join forfait
 group by annee, mois
 
-
-set PGCLIENTENCODING=utf-8&& set PGPASSWORD=/*Hugoch44*/&& "C:/Program Files/PostgreSQL/14/bin/psql.exe" -U postgres -d "Projet" -f "E:/MasterSSD/M1/S7/BDD/bd_station.sql"
