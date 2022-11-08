@@ -4,13 +4,13 @@
 select id_forfait, date_debut, id_type_forfait
 from forfait
 where id_carte = 1 
-order by id_forfait DESC
+order by date_debut DESC
 LIMIT 1
 
 -- 2)
 select distinct(nom_remontee)
 from remontee natural join type_remontee
-where libelle_type_remontee = 'télésiège'
+where libelle_type_remontee = 'tÃ©lÃ©siÃ¨ge'
 
 -- 3)
 select distinct(nom_remontee)
@@ -30,19 +30,22 @@ from type_forfait natural join forfait
 group by libelle_type_forfait
 
 -- 6)
-select id_forfait
-from passage natural join carte natural join forfait natural join remontee
-group by id_forfait 
-having count(distinct(id_remontee)) = 
-		(select count(id_remontee)
-		from remontee)
+with toto as(
+	select id_forfait
+	from passage natural join carte natural join forfait natural join remontee
+	group by id_forfait 
+	having count(distinct(id_remontee)) = 
+			(select count(id_remontee)
+			from remontee))
+select count(*) as forfait_util
+from toto
 		
 -- 7)
 select id_carte, count(id_forfait)
 from carte natural join forfait
 group by id_carte 
 having count(id_forfait) >= 
-		ALL (select count(id_forfait)
+		ALL(select count(id_forfait)
 		from carte natural join forfait
 		group by id_carte)
 
@@ -77,11 +80,9 @@ having count(id_remontee) <=
 		group by nom_remontee)
 
 -- 12)
-select date_debut, libelle_type_forfait, count(id_type_forfait)
+select id_forfait, date_debut, count(id_type_forfait)
 from forfait natural join type_forfait
 group by date_debut, libelle_type_forfait
-order by date_debut
-
 having count(id_type_forfait) >=
 		ALL (select count(id_type_forfait)
 		from forfait natural join type_forfait
@@ -97,3 +98,12 @@ select extract (MONTH from date_debut) as mois, extract (YEAR from date_debut) a
 from type_forfait natural join forfait
 group by annee, mois
 
+-- Bonus) Type de forfait le plus vendue sur une journée
+select date_debut, libelle_type_forfait, count(id_type_forfait)
+from forfait natural join type_forfait
+group by date_debut, libelle_type_forfait
+having count(id_type_forfait) >=
+		ALL (select count(id_type_forfait)
+		from forfait natural join type_forfait
+		group by date_debut, libelle_type_forfait) 
+order by date_debut

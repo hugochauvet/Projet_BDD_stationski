@@ -146,7 +146,7 @@ moment_interdit = dernier_passage + duree_remontee_t;
 
 --Si la carte repasse dans la meme remontée avant la fin de la période une erreur est déclanché
 if (new_heure_passage < moment_interdit) then 
-RAISE EXCEPTION 'Vous venez juste de passer sur cette remontée, attendait % pour réessayer !!', moment_interdit;
+RAISE EXCEPTION 'Vous venez juste de passer sur cette remontée, attender % pour réessayer !!', moment_interdit;
 end if;
 
 RETURN NEW; 
