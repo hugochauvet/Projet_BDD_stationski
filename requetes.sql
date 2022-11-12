@@ -80,14 +80,13 @@ having count(id_remontee) <=
 		group by nom_remontee)
 
 -- 12)
-select id_forfait, date_debut, count(id_type_forfait)
-from forfait natural join type_forfait
-group by date_debut, libelle_type_forfait
-having count(id_type_forfait) >=
-		ALL (select count(id_type_forfait)
-		from forfait natural join type_forfait
-		group by date_debut, libelle_type_forfait) 
-order by date_debut
+select DATE(heure_passage), id_forfait, count(id_forfait)
+from carte natural join forfait natural join passage
+group by DATE(heure_passage), id_forfait
+having count(id_carte) >= 
+		ALL (select count(id_forfait)
+		from passage natural join carte natural join forfait	 
+		group by DATE(heure_passage), id_forfait)
 
 -- 13)
 select sum(prix)
