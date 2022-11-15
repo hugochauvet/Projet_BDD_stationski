@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.0.36">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Rapport du projet</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+<script src="rapport_files/libs/clipboard/clipboard.min.js"></script>
+<script src="rapport_files/libs/quarto-html/quarto.js"></script>
+<script src="rapport_files/libs/quarto-html/popper.min.js"></script>
+<script src="rapport_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="rapport_files/libs/quarto-html/anchor.min.js"></script>
+<link href="rapport_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="rapport_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="rapport_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="rapport_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="rapport_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Rapport du projet</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    
+  </div>
+  
+
+</header>
+
+<section id="projet-de-base-de-données-master-1-ssd" class="level1">
+<h1>Projet de Base de Données (Master 1 SSD)</h1>
+<section id="objectifs" class="level2">
+<h2 class="anchored" data-anchor-id="objectifs">Objectifs</h2>
+<p>L’objectifs principal était de crée une base de données fonctionnelle pour des stations de ski, capable de gérer certaines contraintes imposées par le client. Pour ce faire, nous sommes partie d’une relation non normalisée, contenant un nombre important d’information sur les stations de ski. Nous avons du d’abord décomposer cette relation et normalisée nos differentes tables, afin de crée notre base. Une fois ceci réaliser, nous devions faire respecter les contraintes du clients à la base de donnée. Regardons plus en détail le travail réaliser.</p>
+</section>
+<section id="créations-de-la-base-et-normalisation" class="level2">
+<h2 class="anchored" data-anchor-id="créations-de-la-base-et-normalisation">Créations de la base et normalisation</h2>
+<p>Le premier objectif était de décomposer cette table en préservant les dépandance fonctionnelles et sans perte d’information. Le but étant d’obtenir plusieur tables qui respecte tous au minimum la 3ème forme normale.</p>
+<p>Nous avons d’abord du imaginer le modèle conceptuel des données (MCD), qui vas nous permettre d’identifier les principales entités à représenter, leurs relations et leurs attributs. Nous obtenons le MCD suivant :</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="image/MCD.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">MCD</figcaption><p></p>
+</figure>
+</div>
+<p>Une fois le MCD terminer nous avons pu facilement en tirer le modèle logique de données (MLD), afin d’avoir une representation de toute nos tables, ainsi que leurs relations et leurs attributs. Voici le MLD que nous obtenons :</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="image/normalisation.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">MLD</figcaption><p></p>
+</figure>
+</div>
+<p>Nous pouvons voir grace au MLD que chaque table respecte bien la 3ème forme normale. D’abord nous avons chacune des tables qui admet une clé primaire, et tous les attributs les attributs contiennent une seule valeur pour chaque tuple. Ensuite, nous retrouvons bien que tous nos attributs non clé ne dépendent pas d’une partie de la clé primaire. Et enfin tous nos attributs n’appartenant pas à une clé ne dépandent pas d’un attribut non clé primaire. Tous ceci nous permet de validé la 3ème forme normale. Pour aller plus loin, nous pouvons admettre que toutes nos tables repectent la forme normale de Boyce-Codd, car Tous les attributs non-clé ne sont pas source de dépendance fonctionnelle pour une partie de la clé.</p>
+<p>La normalisation est maintenant terminer, nous connaissons les differentes tables qui composeront la base de données des stations de ski. Nous pouvons donc les crées et les allimenter grâce à la table de départ, et passer au deuxième objectif liée aux contraintes du client.</p>
+</section>
+<section id="contrainte-et-déclancheur-triggers" class="level2">
+<h2 class="anchored" data-anchor-id="contrainte-et-déclancheur-triggers">Contrainte et déclancheur (Triggers)</h2>
+<p>Dans l’état actuel notre base de données contient certaines failles, qui ne peuvent être gerer directement. Le client nous a dicté ses contraintes qui lui semble les plus importantes. C’est celle-ci que nous avons traité puis testé. Voici les contraintes imposées :</p>
+<p>1- Une carte ne peut pas être associée à deux forfaits qui ont une période de validité commune. <br> 2- Une carte ne peut pas être associée à un nouveau forfait si l’ancien n’est pas encore utilisé.<br> 3- On ne peut passer à une remontée mécanique que si le forfait est valide.<br> 4- On ne peut passer à une remontée mécanique que si le forfait n’est pas temporisé.</p>
+<p>On peut diviser ces contraintes en deux groupes de deux. La 1 et 2 qui s’appliquerons à notre table forfait, et la 3 et 4 qui s’appliquerons à la table passage. Nous avons donc crée 2 triigers qui font appelles à des fonctions definis au préalable. C’est dans ces fonctions que l’on fait respecter les différentes contraites. Voyons plus en détails ces fonctions.</p>
+<section id="traitement-des-contraintes-1-et-2" class="level3">
+<h3 class="anchored" data-anchor-id="traitement-des-contraintes-1-et-2">Traitement des contraintes 1 et 2</h3>
+<p>tout d’abord avec la fonction pour les deux premieres contraintes. L’objectif va être de compter le nombre de forfait qui ne respecte pas nos contraintes par rapport au forfait que nous ajoutons.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="image/declare_trigger12.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">Declare Trigger 1 &amp; 2</figcaption><p></p>
+</figure>
+</div>
+On commence pas initialiser 3 variables:
+<li>
+new_date_debut : La date de début du nouveau forfait.
+</li><li>
+new_duree_forfait : La durée du forfait que nous voulons ajouter.
+</li><li>
+<p>nb_forfaits : Le nombre de forfait qui ne respecte pas nos contraintes. <br> <br> Nous devons ensuite attribuer des valeur à chacune de ses variables.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="image/new_date_debut.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">new_date_debut</figcaption><p></p>
+</figure>
+</div>
+<p>Pour la new_date_debut on s’assure que la valeur ne soit pas null. Si elle l’est, on lui donne comme valeur la date du jour actuel.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="image/new_duree_forfait.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">new_duree_forfait</figcaption><p></p>
+</figure>
+</div>
+<p>Pour la new_duree_forfait, on doit récuperer la valeur de celle-ci liée au type de forfait que l’ont souhaite ajouter. La requete suivante vas donc chercher cette valeur, dans notre table type_de_forfait, pour l’id_type_forfait liée au forfait que nous ajoutons.</p>
+<p>Une fois ces deux variables initialiser nous pouvons chercher le nb_forfaits.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="image/nb_forfait.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">nb_forfaits</figcaption><p></p>
+</figure>
+</div>
+<p>Pour les cartes qui correspondent à la carte liée au forfait qu’on veut ajoute, on vas d’abord chercher si la periode de notre nouveau forfait chevauche une période d’un autre forfait déja présent dans notre tables forfait. Ceci vas nous permettre de verifier la premiere contrainte.<br> Ensuite on cherche si la carte du nouveau forfait que l’ont ajoute, correspond à un forfait avec une carte qui n’a pas encore était utilisé. Dans nos donnée cette information est spécifié avec une date de débat à valeur null. Ici ces la contrainte deux qui vas etre pris en compte. <br> On compte les forfaits qui respecte ces conditions, ce qui constitue notre variable nb_forfaits.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="image/trigger12.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">Trigger 1 &amp; 2</figcaption><p></p>
+</figure>
+</div>
+<p>S’il y a un forfait ou plus qui sont compter, cela signifie que nos contraintes ne sont pas respecter. Une exception sera lever et signalera que la carte n’est pas disponible, en specifiant le numéro de la carte.<br> La fonction maintenant terminer il faut verifier si elle fonctionne.</p>
+</li></section>
+<section id="test-des-contraintes-1-et-2" class="level3">
+<h3 class="anchored" data-anchor-id="test-des-contraintes-1-et-2">Test des contraintes 1 et 2</h3>
+<p>Comme dit précedement les deux premières contrainte s’applique sur la table forfait. La vérification doit se faire avant l’insertion dans cette table.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="image/test_trigger1.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">Test trigger 1</figcaption><p></p>
+</figure>
+</div>
+<p>On commence par essayer la contrainte 1. Pour cela, on ajoute dans un forfait qui n’est pas présent dans nos données. Ensuite on recommence l’opération en ajoutant un forfait avec le même numéro de carte, et en prenant soit de bien avoir une période qui chauvauche le forfait précedement inserer. Ceci vas donc déclancher une exception informant que la carte n’est pas disponible. la contrainte 1 est bien respecter. Une fois cela réaliser on supprime le forfait utiliser pour le test.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="image/test_trigger2.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">Test trigger 2</figcaption><p></p>
+</figure>
+</div>
+<p>Pour la contrainte 2 nous réalisons une opération assez similaire. On essaye d’ajouter deux forfaits avec le même numéro de carte, des période qui ne se chauvaiche pas, pour eviter toute confusion avec la contrainte 1, et une date nul pour le premier forfait. Le premier vas réaliser l’insertion avec succes, cepandant le deuxième forfait vas déclancher l’exception liée a la fonction. La seconde contrainte est respecter on peut maintenant supprimer le forfait test, et passer aux contraintes 3 et 4 sur la table passage.</p>
+</section>
+<section id="traitement-des-contraintes-3-et-4" class="level3">
+<h3 class="anchored" data-anchor-id="traitement-des-contraintes-3-et-4">Traitement des contraintes 3 et 4</h3>
+<p>Pour ces contraintes nous les traitons ensemble dans une même fonction, mais l’exception déclancher et les variables utilisées varie d’un trigger à un autres.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="image/new_heure_passage.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">new_heure_passage</figcaption><p></p>
+</figure>
+</div>
+<p>La variables new_heure_passage sera la seule utilisée pour la gestion des deux contraintes. Elle correspond à la date et l’heure de passage dans une remontée pour une carte. Si lors de l’insertion cette valeur est nul, elle prendra la date et l’heure actuelle.</p>
+<p>Maintenant regardons plus en détail le code qui sert à faire respecter la troisième contrainte.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="image/declare_trigger3.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">Declare trigger 3</figcaption><p></p>
+</figure>
+</div>
+On commence par déclarer les variables que nous utiliserons. Il y en a 4 :
+<li>
+id_forfait_t
+</li><li>
+date_fin
+</li><li>
+heure_fin_t
+</li><li>
+<p>date_heure_fin</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="image/id_forfait_t.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">id_forfait_t</figcaption><p></p>
+</figure>
+</div>
+<p>La variable id_forfait_t correspond a l’id_forfait du forfait le plus recent, c’est-à-dire avec la plus grande date de début dans notre table forfait, pour la cate que nous souhaitons ajouter.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="image/trigger3_fin.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">date_fin, heure_fin_t, date_heure_fin</figcaption><p></p>
+</figure>
+</div>
+<p>On dertermine ensuite la date de fin, ainsi que l’heure de fin, pour notre id_forfait_t. On vas récuper ces valeurs dans la table type_forfait. L’heure de fin est donnée, tandis que la date de fin doit etre calculer en ajoutant la durée du fofait, à la date de début du forfait correspondant à notre id_forfait_t. <br> On concatene les variables date_fin et heure_fin_t pour obtenir la date_heure_fin, qui correspond à la date et l’heure d’expiration du forfait liée à la carte que nous essayons de faire passer.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="image/trigger3.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">Trigger 3</figcaption><p></p>
+</figure>
+</div>
+<p>Si cette date et heure d’expiration est inférieur à la date et l’heure de passage, alors on lève une exception qui spécifira que le forfait est expiré. La contrainte 3 est maintenant geré, regardons le code pour la contrainte 4.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="image/declare_trigger4.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">Declare trigger 4</figcaption><p></p>
+</figure>
+</div>
+Ici seulement 3 variables sont spécifiques pour cette contrainte. Ce sont les suivantes :
+</li><li>
+dernier_passage
+</li><li>
+duree_remontee_t
+</li><li>
+<p>moment_interdit</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="image/trigger4_request.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">Trigger 4 request</figcaption><p></p>
+</figure>
+</div>
+<p>On commence par chercher, pour la carte que pour que l’ont souhaite ajouter, le dernier passage dans la remontée, que l’ont veux ajouter également. On stock le résultat dans la variable dernier_passage. <br> On réupere ensuite la durée de la remontée que l’on veut ajouter qui correspond à la variable duree_remontee_t.<br> Et on ajoute cette durée au dernier passsage pour avoir le moement ou le passage sera de nouveau autorisé.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="image/trigger4.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">Trigger 4</figcaption><p></p>
+</figure>
+</div>
+<p>Si l’heure de passage est inférieur à ce moment, une exection est levé signalement que le passage à cette remontée vient juste d’être effectué, précise le moment ou le passage pour de nouvent être réalisé. Ce qui fait respecter la contrainte 4. On peut maintenant testé si tout cela fonctionne correctement.</p>
+</li></section>
+<section id="test-des-contraintes-3-et-4" class="level3">
+<h3 class="anchored" data-anchor-id="test-des-contraintes-3-et-4">Test des contraintes 3 et 4</h3>
+<p>Nos contraintes serons traiter avant l’insertion dans la table passage.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="image/trigger3_insert_1.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">Trigger 3 &amp; 4 insert 1</figcaption><p></p>
+</figure>
+</div>
+<p>Pour la contrainte 3 le test est très simple. Beaucoup de forfait dans notre base ont une période non valide, il suffit d’ajouter un passage pour une carte et une remontée. Ceci déclanchera l’exception, notre fonction pour le trigger 3 est fonctionnelle.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="image/trigger3_insert_2.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">Trigger 3 &amp; 4 insert 2</figcaption><p></p>
+</figure>
+</div>
+<p>Pour la contrainte 4 nous devons procéder en plusieur étape. On vas d’abord ajouter un nouveau forfait qui aura une période valide.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="image/trigger3_insert_3.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">Trigger 3 &amp; 4 insert 3</figcaption><p></p>
+</figure>
+</div>
+<p>On vas ensuite inserer un nouveau passage, pour la carte et une remontée de ce forfait, avec l’heure et la date du moment comme heure de passage. Ceci ne vas pas déclancher l’exception de la contrainte 4.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="image/trigger3_insert_4.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">Trigger 3 &amp; 4 insert 4</figcaption><p></p>
+</figure>
+</div>
+<p>On essaye tout de suite après refaire la même insertion. Comme l’heure de passage aura changer ceci devrait être possible, mais la contrainte 4 n’étant pas respecter, ceci lève l’exception et indique quand le passage de cette remontée sera de nouveau possible pour cette carte. Nous avons bien réussi à gérer toutes les contraintes imposées par notre clients.</p>
+</section>
+</section>
+<section id="conclusion" class="level2">
+<h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
+<p>La base des station de ski est maintenant opérationnelle. Nous avons réussi à ciblé toutes les entiés, les attributs, et les relations, qui permettent une gestion des données simplifiées. Nous avons ensuite shématisé et crée notre base. Une fois ce travaille réalisé, nous avons fait en sorte de gérer les contraintes imposée par le client, tout en les testants au préalable. Ce projet nous à permis de mettre en oeuvre un grand nombre de nos connaissances en SQL, en passant par la création de base et la gestion des données. Nous avons tout de même fait face à des difficultées, que ce soit par l’utilisation de PgAdmin en début de projet, ou pour l’interprétation des contraintes en langage SQL. Malgrés cela, nous avons réussi à aller au bout de nos idées, et obtenons un rendu complet répondant à l’ensembles des demandes du client.</p>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      let href = ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
