@@ -1,7 +1,8 @@
 ---
 title: "Rapport du projet"
 format:
-    pdf
+    pdf:
+        fig-pos: "H"
 editor:
     render-on-save: true
 ---
@@ -22,7 +23,7 @@ Nous avons d'abord du imaginer le modèle conceptuel des données (MCD), qui vas
 
 Une fois le MCD terminer nous avons pu facilement en tirer le modèle logique de données (MLD), afin d'avoir une representation de toute nos tables, ainsi que leurs relations et leurs attributs. Voici le MLD que nous obtenons :
 
-![MLD](image/normalisation.png)
+![MLD](image/MLD.png)
 
 Nous pouvons voir grace au MLD que chaque table respecte bien la 3ème forme normale. D'abord nous avons chacune des tables qui admet une clé primaire, et tous les attributs les attributs contiennent une seule valeur pour chaque tuple. Ensuite, nous retrouvons bien que tous nos attributs non clé ne dépendent pas d'une partie de la clé primaire. Et enfin tous nos attributs n'appartenant pas à une clé ne dépandent pas d'un attribut non clé primaire. Tous ceci nous permet de validé la 3ème forme normale. Pour aller plus loin, nous pouvons admettre que toutes nos tables repectent la forme normale de Boyce-Codd, car Tous les attributs non-clé ne sont pas source de dépendance fonctionnelle pour une partie de la clé.
 
@@ -93,7 +94,9 @@ Pour ces contraintes nous les traitons ensemble dans une même fonction, mais l'
 
 ![new_heure_passage](image/new_heure_passage.png)
 
-La variables new_heure_passage sera la seule utilisée pour la gestion des deux contraintes. Elle correspond à la date et l'heure de passage dans une remontée pour une carte. Si lors de l'insertion cette valeur est nul, elle prendra la date et l'heure actuelle. 
+La variables new_heure_passage sera la seule utilisée pour la gestion des deux contraintes. Elle correspond à la date et l'heure de passage dans une remontée pour une carte. Si lors de l'insertion cette valeur est nul, elle prendra la date et l'heure actuelle.
+
+<I>Nb : Cette contrainte n'est pas forcément necessaire car l'heure de passage fait partie de la clée prmimaire de la table passage, et ne sera donc jamais nul.</I>
 
 Maintenant regardons plus en détail le code qui sert à faire respecter la troisième contrainte.
 
