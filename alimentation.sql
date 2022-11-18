@@ -6,7 +6,7 @@ ORDER BY id_carte;
 
 -- Type Forfait
 INSERT INTO type_forfait (id_type_forfait, libelle_type_forfait, prix, heure_debut, heure_fin, duree_forfait, conditions)
-SELECT DISTINCT id_type_forfait, libelle_type_forfait, prix, heure_debut, heure_fin, duree_forfait, conditions
+SELECT DISTINCT id_type_forfait, libelle_type_forfait, prix, heure_debut, heure_fin, duree_forfait, condition
 FROM bd_station;
 
 -- Type Remontee

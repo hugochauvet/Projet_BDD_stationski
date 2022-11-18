@@ -69,9 +69,6 @@ values (123456789,NULL,1,1);
 insert into forfait (id_forfait,date_debut,id_carte,id_type_forfait)
 values (12345678,NULL,1,1);
 
-insert into forfait (id_forfait,date_debut,id_carte,id_type_forfait)
-values (12345678,NULL,2,1);
-
 delete from forfait
 where date_debut is NULL;
 
